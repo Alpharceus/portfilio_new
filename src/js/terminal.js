@@ -1,15 +1,15 @@
 // ------- MATRIX RAIN EFFECT -------
 const matrixChars = [
-    ..."ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-    ..."रामनपँडॆय",  // Nepali/Hindi from your name
-    ..."ラマン",     // Japanese Katakana for Raman
-    ..."Раман",      // Russian (Raman)
-    ..."रामन",       // Hindi
-    ..."رامان",      // Arabic
-    ..."光学",        // Chinese ("Optics" for flair)
-    ..."0123456789ABCDEF", // Hex
-    ..."01"          // Binary
+    ..."RamanPandey", // Latin
+    ..."रमनपाण्डे",     // Devanagari (Nepali/Hindi)
+    ..."ラマンパンデイ", // Japanese (Katakana)
+    ..."РаманПандей",   // Russian (Cyrillic)
+    ..."拉曼潘德伊",      // Chinese (Simplified)
+    ..."رامانباندى",     // Arabic
+    ..."52616D616E50616E646579", // Hexadecimal (ASCII for "RamanPandey", no space)
+    ..."0101001001100001011011010110000101101110010100000110000101101110011001000110010101111001" // Binary (ASCII for "RamanPandey", no space)
 ];
+
 
 let matrixRain = {
     canvas: null,
