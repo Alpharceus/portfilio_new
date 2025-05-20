@@ -1,0 +1,14 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrollbars unless you want them */
+    background: transparent; /* Or none */
+    color: #eee; /* Make text readable */
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+
+.overlay, header, main, footer {
+    position: relative;
+    z-index: 1;
+}
