@@ -1,7 +1,7 @@
 let stars = [];
 let shootingStars = [];
 let hoveredStar = null;
-let orionStarScreenPos = []; // store positions per frame for clicks
+let orionStarScreenPos = [];
 
 const orionStars = [
     { name: "Betelgeuse", ra: 5.92, dec: 7.4, type: "M2", info: "Red supergiant, Alpha Orionis" },
@@ -28,9 +28,8 @@ function randomColorFromType(type) {
     }
 }
 
-// Mirror the X axis for classic sky orientation
 function getNormalizedCoords(star) {
-    let x = map(star.ra, 5.2, 5.92, 1, 0); // FLIP X
+    let x = map(star.ra, 5.2, 5.92, 1, 0);
     let y = map(star.dec, -10, 8, 1, 0);
     return createVector(x, y);
 }
@@ -47,14 +46,27 @@ function setup() {
     canvas.style('z-index', '-1');
     canvas.style('position', 'fixed');
 
-    // Animated background stars with Perlin noise
-    for (let i = 0; i < 170; i++) {
+    frameRate(48);
+
+    // 120 larger stars
+    for (let i = 0; i < 200; i++) {
+        let isMainStar = (i < 7); // first 7 are the "main" bright stars
+        let colorType = random();
+        let tint;
+        if (colorType < 0.05)       tint = color(255, 210, 210);   // faint red (~5%)
+        else if (colorType < 0.15)  tint = color(195, 210, 255);   // blue/white (~10%)
+        else if (colorType < 0.22)  tint = color(255, 255, 180);   // yellow/cream (~7%)
+        else                        tint = color(255, 255, 220);   // mostly white/cream
+
         stars.push({
             base: createVector(random(), random()),
-            r: random(1.1, 2.1),
+            r: isMainStar ? random(3.6, 5.3) : random(1.7, 2.9),
             twinkleSeed: random(10000),
             noiseSeedX: random(10000),
-            noiseSeedY: random(10000)
+            noiseSeedY: random(10000),
+            color: tint,
+            twinkleSpeed: isMainStar ? 0.008 : 0.012,
+            maxAlpha: isMainStar ? 250 : 195 + random(0, 50)
         });
     }
     noStroke();
@@ -64,18 +76,22 @@ function draw() {
     background(14, 16, 31);
     drawGradient();
 
-    // Animated background stars
+    // Animated background stars (optimized)
     for (let s of stars) {
         let wanderX = s.base.x + (noise(s.noiseSeedX + millis() * 0.00005) - 0.5) * 0.02;
         let wanderY = s.base.y + (noise(s.noiseSeedY + millis() * 0.00005) - 0.5) * 0.02;
         let spos = skyToScreenFlat(createVector(wanderX, wanderY), 1.0, width/2, height/2);
+
         let t = millis() * 0.0003 + s.twinkleSeed;
-        let alpha = 195 + 60 * (noise(t) - 0.5) + 20 * sin(frameCount * 0.012 + s.twinkleSeed * 5);
-        fill(255, 255, 220, alpha);
+        // Deeper, slower twinkle for main stars, more variation for faint stars
+        let alpha = s.maxAlpha +
+            50 * (noise(t) - 0.5) +
+            24 * sin(frameCount * s.twinkleSpeed + s.twinkleSeed * 5);
+        fill(red(s.color), green(s.color), blue(s.color), alpha);
         circle(spos.x, spos.y, s.r);
     }
 
-    // Smoother shooting stars (now with fading, curved tail)
+    // Shooting stars with correct tail
     updateShootingStars();
 
     // Draw Orion
@@ -96,8 +112,6 @@ function drawOrionFlat(scale = 0.65) {
     let centerY = height / 2;
     let normPos = orionStars.map(getNormalizedCoords);
     let starPositions = normPos.map(nv => skyToScreenFlat(nv, scale, centerX, centerY));
-
-    // Store screen positions for click detection
     orionStarScreenPos = starPositions;
 
     // Lines
@@ -109,11 +123,11 @@ function drawOrionFlat(scale = 0.65) {
     }
     noStroke();
 
-    // Twinkling Orion stars, use smooth sin for twinkle
+    // Twinkling Orion stars
     hoveredStar = null;
     for (let i=0; i<orionStars.length; i++) {
         let sx = starPositions[i].x, sy = starPositions[i].y;
-        let tw = 18 + 8*sin(frameCount*0.045 + i*7); // slower, smoother twinkle
+        let tw = 18 + 8*sin(frameCount*0.045 + i*7);
         let d = dist(mouseX, mouseY, sx, sy);
         let baseCol = randomColorFromType(orionStars[i].type);
         fill(red(baseCol), green(baseCol), blue(baseCol), d<28 ? 255 : 215);
@@ -134,11 +148,9 @@ function drawOrionFlat(scale = 0.65) {
     }
 }
 
-// --- Shooting Stars with Fading, Tapered Tail ---
+// Shooting Stars with Correct Tapered Tail
 function updateShootingStars() {
-    // Slower, more natural
-    if (random(1) < 0.012 && shootingStars.length < 2) {
-        // Each meteor has a trail of previous positions
+    if (random(1) < 0.010 && shootingStars.length < 2) {
         shootingStars.push({
             x: random(width * 0.4, width),
             y: random(0, height * 0.4),
@@ -155,20 +167,20 @@ function updateShootingStars() {
         // Update position
         s.x += s.vx * 0.7;
         s.y += s.vy * 0.7;
-        s.trail.unshift({x: s.x, y: s.y}); // add to front
-        if (s.trail.length > 22) s.trail.pop();
+        s.trail.push({x: s.x, y: s.y});
+        if (s.trail.length > 18) s.trail.shift();
 
         s.life++;
-        let headAlpha = map(s.life, 0, s.maxLife, 230, 0);
-        let headSize = 4 + 1.8 * sin(frameCount*0.11 + i*11);
+        let headAlpha = map(s.life, 0, s.maxLife, 220, 0);
+        let headSize = 4.5 + 1.8 * sin(frameCount*0.11 + i*11);
 
-        // Draw fading, tapered tail (overlapping ellipses)
-        for (let j = s.trail.length - 1; j > 0; j--) {
-            let pct = j / s.trail.length;
-            let alpha = 55 * pct * pct; // fades out
-            let size = headSize * pct * 1.6;
+        // Draw tail from oldest to newest: thinnest, faintest at start, thickest, brightest at head
+        for (let j = 0; j < s.trail.length; j++) {
+            let pct = j / (s.trail.length-1); // 0 = tail, 1 = head
+            let alpha = 64 * pow(pct, 1.8); // fades out fast at tail
+            let size = headSize * (0.45 + pct*0.8); // thickest at head, thinnest at tail
             fill(255, 255, 255, alpha);
-            ellipse(s.trail[j].x, s.trail[j].y, size, size * 0.7); // slightly flattened
+            ellipse(s.trail[j].x, s.trail[j].y, size, size*0.7);
         }
         // Head
         fill(255, 255, 255, headAlpha);
@@ -190,37 +202,24 @@ function mousePressed() {
     }
 }
 
-// --- Star actions ---
+// --- Star actions (customized as requested) ---
 function handleStarClick(idx) {
-    // 0: Betelgeuse, 1: Bellatrix, 2: Alnilam, 3: Mintaka, 4: Alnitak, 5: Saiph, 6: Rigel
     switch(idx) {
-        case 0:
-            openTerminal(); break;
-        case 1:
-            alert("Bellatrix: About Me (placeholder)");
-            break;
-        case 2:
-            alert("Alnilam: Projects (placeholder)");
-            break;
-        case 3:
-            alert("Mintaka: Skills (placeholder)");
-            break;
-        case 4:
-            alert("Alnitak: Contact (placeholder)");
-            break;
-        case 5:
-            alert("Saiph: Resume (placeholder)");
-            break;
-        case 6:
-            alert("Rigel: GitHub (placeholder)");
-            break;
+        case 0: openTerminal(); break;
+        case 1: openProjects(); break;
+        case 2: openPapers(); break;
+        case 3: openSkills(); break;
+        case 4: openBlog(); break;
+        case 5: placeholderAction(); break;
+        case 6: placeholderAction(); break;
     }
 }
-
-// --- Demo function for Betelgeuse terminal (replace with your UI/modal logic!) ---
-function openTerminal() {
-    alert("Launching Terminal (replace this with your terminal overlay/modal!)");
-}
+//function openTerminal()   { alert("Terminal (Linux shell) overlay coming soon!"); }
+function openProjects()   { alert("Projects section coming soon!"); }
+function openPapers()     { alert("Papers/Publications section coming soon!"); }
+function openSkills()     { alert("Skills/Tech Stack section coming soon!"); }
+function openBlog()       { alert("Blog section coming soon!"); }
+function placeholderAction() { alert("This feature will be available soon!"); }
 
 function windowResized() {
     resizeCanvas(window.innerWidth, window.innerHeight);

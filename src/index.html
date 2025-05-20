@@ -8,6 +8,13 @@
     <script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5.js-svg@1.0.0/lib/p5.js-svg.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5.js-sound@1.0.0/lib/p5.sound.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  (function() {
+      emailjs.init('l3mmWHhnxt2z0U354'); // Replace with your public key
+  })();
+</script>
+
 </head>
 <body>
     <!-- Header/Nav -->
@@ -29,61 +36,35 @@
 
     <!-- Main Landing Section / Star Map -->
     <main>
-        <section id="home" class="landing">
-            <!-- Placeholder for star map visualization -->
-            
-           
-        </section>
-
-        <!-- About Me Section -->
-        <section id="about">
-            <h2>About Me</h2>
-            <p><!-- Placeholder for about me text --></p>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects">
-            <h2>Projects</h2>
-            <div class="projects-list">
-                <!-- Placeholder for projects -->
-            </div>
-        </section>
-
-        <!-- Skills Section -->
-        <section id="skills">
-            <h2>Skills</h2>
-            <div class="skills-list">
-                <!-- Placeholder for skills -->
-            </div>
-        </section>
-
-        <!-- Contact / Hire Me Section -->
-        <section id="contact">
-            <h2>Contact</h2>
-            <p><!-- Placeholder for contact info --></p>
-        </section>
-
-        <section id="hire">
-            <h2>Hire Me</h2>
-            <div class="terminal-placeholder">
-                <!-- Placeholder for terminal interface -->
-                <p>[Terminal Interface Coming Soon]</p>
-            </div>
-        </section>
+      
     </main>
 
     <!-- Footer -->
     <footer>
         <div class="social-links">
-            <a href="https://github.com/Alpharceus" target="_blank">GitHub</a> |
-            <a href="https://linkedin.com/in/raman-pandey" target="_blank">LinkedIn</a>
+            <!-- <a href="https://github.com/Alpharceus" target="_blank">GitHub</a> |
+            <a href="https://linkedin.com/in/raman-pandey" target="_blank">LinkedIn</a> -->
             <!-- Add more links as needed -->
         </div>
         <p>&copy; 2025 Raman Pandey. All rights reserved.</p>
     </footer>
 
+<div id="terminal-overlay" class="hidden">
+  <canvas id="matrix-rain"></canvas>
+  <div id="terminal-window">
+    <div id="terminal-output"></div>
+    <div id="terminal-input-row">
+      <span class="terminal-prompt">raman@portfolio:~$</span>
+      <input id="terminal-input" autocomplete="off" autofocus />
+    </div>
+  </div>
+</div>
+
+
     <script src="js/main.js"></script>
     <script src="js/star-map.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/terminal.js"></script>
+
+
 </body>
 </html>

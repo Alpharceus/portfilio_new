@@ -1,0 +1,418 @@
+// ------- MATRIX RAIN EFFECT -------
+const matrixChars = [
+    ..."ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+    ..."रामनपँडॆय",  // Nepali/Hindi from your name
+    ..."ラマン",     // Japanese Katakana for Raman
+    ..."Раман",      // Russian (Raman)
+    ..."रामन",       // Hindi
+    ..."رامان",      // Arabic
+    ..."光学",        // Chinese ("Optics" for flair)
+    ..."0123456789ABCDEF", // Hex
+    ..."01"          // Binary
+];
+
+let matrixRain = {
+    canvas: null,
+    ctx: null,
+    columns: [],
+    fontSize: 22,
+    animationId: null,
+    theme: "dark"
+};
+
+function startMatrixRain() {
+    matrixRain.canvas = document.getElementById("matrix-rain");
+    matrixRain.ctx = matrixRain.canvas.getContext("2d");
+    resizeMatrixRain();
+    window.addEventListener("resize", resizeMatrixRain);
+
+    const cols = Math.floor(window.innerWidth / matrixRain.fontSize);
+    matrixRain.columns = new Array(cols).fill(0);
+
+    matrixRain.animationId = requestAnimationFrame(drawMatrixRain);
+}
+function stopMatrixRain() {
+    if (matrixRain.animationId) cancelAnimationFrame(matrixRain.animationId);
+    window.removeEventListener("resize", resizeMatrixRain);
+    if (matrixRain.ctx && matrixRain.canvas) {
+        matrixRain.ctx.clearRect(0, 0, matrixRain.canvas.width, matrixRain.canvas.height);
+    }
+}
+function resizeMatrixRain() {
+    matrixRain.canvas.width = window.innerWidth;
+    matrixRain.canvas.height = window.innerHeight;
+    const cols = Math.floor(window.innerWidth / matrixRain.fontSize);
+    matrixRain.columns = new Array(cols).fill(0);
+}
+function drawMatrixRain() {
+    const ctx = matrixRain.ctx;
+    const width = matrixRain.canvas.width;
+    const height = matrixRain.canvas.height;
+    ctx.fillStyle = matrixRain.theme === "dark" ? "rgba(10,12,20,0.28)" : "rgba(200,220,255,0.13)";
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.font = `bold ${matrixRain.fontSize}px monospace`;
+    ctx.textAlign = "center";
+    for (let i = 0; i < matrixRain.columns.length; i++) {
+        let x = i * matrixRain.fontSize + matrixRain.fontSize / 2;
+        let y = matrixRain.columns[i] * matrixRain.fontSize;
+        let char = matrixChars[Math.floor(Math.random()*matrixChars.length)];
+
+        ctx.fillStyle = matrixRain.theme === "dark" ? "#2aff2a" : "#1c3e60";
+        ctx.shadowColor = matrixRain.theme === "dark" ? "#11f911" : "#fff";
+        ctx.shadowBlur = 8;
+        ctx.fillText(char, x, y);
+
+        ctx.shadowBlur = 0;
+
+        if (y > height && Math.random() > 0.94) {
+            matrixRain.columns[i] = 0;
+        } else {
+            matrixRain.columns[i]++;
+        }
+    }
+    matrixRain.animationId = requestAnimationFrame(drawMatrixRain);
+}
+
+// ----------- TERMINAL LOGIC -----------
+const terminalCommands = {
+    "help": {
+        desc: "List all commands",
+        action: function(term) {
+            term.echo(
+                "Available commands:\n" +
+                " about, resume, contact, github, linkedin, twitter, email, theme, clear, exit\n" +
+                " [Also try: projects, papers, blog, motd, whoami]"
+            );
+        }
+    },
+    "about": {
+        desc: "Show about info",
+        action: function(term) {
+            term.echo("Raman Pandey, ECE & Astrophysics @ UNM. Quantum/ML nerd, Linux fan.\nType 'resume' for credentials or visit my GitHub.");
+        }
+    },
+    "projects": {
+        desc: "Show projects (placeholder)",
+        action: function(term) {
+            term.echo("Project showcase coming soon. For now, see my GitHub!");
+        }
+    },
+    "papers": {
+        desc: "Show papers (placeholder)",
+        action: function(term) {
+            term.echo("Research publications coming soon!");
+        }
+    },
+    "blog": {
+        desc: "Visit my blog (placeholder)",
+        action: function(term) {
+            term.echo("Blog coming soon! Type 'motd' for some inspiration :)");
+        }
+    },
+"motd": {
+    desc: "Message of the day",
+    action: function(term) {
+        const msgs = [
+            "The universe is under no obligation to make sense to you. —NDT",
+            "Not all those who wander are lost.",
+            "Linux is user friendly, it's just picky about its friends.",
+            "The Cosmos is within us. —Carl Sagan",
+            "Be the entropy-resistor you wish to see in the world.",
+            "Not everything that can be counted counts, and not everything that counts can be counted. —Einstein",
+            "Keep looking up… that’s the secret of life.",
+            "Those who dare to fail miserably can achieve greatly. —JFK",
+            "In the middle of difficulty lies opportunity. —Einstein",
+            "The only way to learn mathematics is to do mathematics. —Paul Halmos",
+            "Code never lies, comments sometimes do.",
+            "Stay hungry, stay foolish. —Steve Jobs",
+            "Do. Or do not. There is no try. —Yoda",
+            "The greatest enemy of knowledge is not ignorance, it is the illusion of knowledge. —Stephen Hawking",
+            "Somewhere, something incredible is waiting to be known. —Carl Sagan",
+            "Imagination will often carry us to worlds that never were.",
+            "The reward for good work is more work.",
+            "sudo make me a sandwich.",
+            "There are only 10 types of people in the world: Those who understand binary and those who don’t.",
+            "Talk is cheap. Show me the code. —Linus Torvalds",
+            "It always seems impossible until it’s done. —Nelson Mandela",
+            "Let’s go invent tomorrow instead of worrying about what happened yesterday. —Steve Jobs",
+            "Entia non sunt multiplicanda praeter necessitatem. —Occam’s Razor",
+            "Astronomy compels the soul to look upwards and leads us from this world to another.",
+            "In space, no one can hear you scream.",
+            "Any sufficiently advanced technology is indistinguishable from magic. —Arthur C. Clarke",
+            "The good thing about science is that it’s true whether or not you believe in it. —Neil deGrasse Tyson",
+            "Happiness can be found even in the darkest of times, if one only remembers to turn on the light.",
+            "A person who never made a mistake never tried anything new. —Einstein",
+            "Explore. Dream. Discover."
+        ];
+        term.echo(msgs[Math.floor(Math.random()*msgs.length)]);
+    }
+},
+
+"email": {
+    desc: "Show email addresses",
+    action: function(term) {
+        term.echo(
+          "Institutional: ramanpandey01@unm.edu\nPersonal: alpharceus@gmail.com"
+        );
+    }
+},
+
+    "whoami": {
+        desc: "Identify user",
+        action: function(term) {
+            term.echo("raman@portfolio:~$ " + "human (or are you?)");
+        }
+    },
+    "resume": {
+        desc: "Show/download resume",
+        action: function(term) {
+            term.echo("Opening resume...");
+            window.open("assets/resume.pdf", "_blank");
+        }
+    },
+"contact": {
+    desc: "Contact me (send a message via terminal form)",
+    action: function(term) {
+        term.startContactForm();
+    }
+},
+
+    "github": {
+        desc: "Open GitHub",
+        action: function(term) {
+            window.open("https://github.com/Alpharceus", "_blank");
+            term.echo("Opening GitHub...");
+        }
+    },
+    "linkedin": {
+        desc: "Open LinkedIn",
+        action: function(term) {
+            window.open("https://linkedin.com/in/alpha-arceus", "_blank");
+            term.echo("Opening LinkedIn...");
+        }
+    },
+    "twitter": {
+        desc: "Open Twitter/X",
+        action: function(term) {
+            window.open("https://twitter.com/alpha_arceus", "_blank");
+            term.echo("Opening Twitter/X...");
+        }
+    },
+    "theme": {
+        desc: "theme [0|1] — dark(0) or light(1)",
+        action: function(term, arg) {
+            if (arg === "0") {
+                term.setTheme("dark");
+            } else if (arg === "1") {
+                term.setTheme("light");
+            } else {
+                term.echo("You're too early for this feature!");
+            }
+        }
+    },
+    "clear": {
+        desc: "Clear terminal",
+        action: function(term) { term.clear(); }
+    },
+    "exit": {
+        desc: "Close terminal",
+        action: function(term) { term.close(); }
+    }
+};
+
+// Terminal "class" implementation
+class Terminal {
+    constructor() {
+        this.overlay = document.getElementById("terminal-overlay");
+        this.window = document.getElementById("terminal-window");
+        this.output = document.getElementById("terminal-output");
+        this.input = document.getElementById("terminal-input");
+        this.prompt = document.querySelector(".terminal-prompt");
+        this.history = [];
+        this.histPtr = 0;
+        this.theme = "dark";
+        this.opened = false;
+        this.bindEvents();
+    }
+    open() {
+        if (this.opened) return;
+        this.overlay.classList.remove("hidden");
+        this.theme = "dark";
+        this.setTheme(this.theme);
+        this.clear();
+        setTimeout(() => {
+            this.input.focus();
+        }, 60);
+        this.echo("Welcome to Raman's Portfolio Terminal!\nType 'help' to see available commands.");
+        startMatrixRain();
+        this.opened = true;
+    }
+    close() {
+        this.overlay.classList.add("hidden");
+        stopMatrixRain();
+        this.opened = false;
+    }
+    clear() {
+        this.output.innerHTML = "";
+    }
+    echo(txt) {
+        let pre = document.createElement("pre");
+        pre.textContent = txt;
+        this.output.appendChild(pre);
+        this.output.scrollTop = this.output.scrollHeight;
+    }
+    setTheme(mode) {
+        this.theme = mode === "light" ? "light" : "dark";
+        document.body.setAttribute('data-theme', this.theme);
+        matrixRain.theme = this.theme;
+        if (this.theme === "light") {
+            this.overlay.classList.add("light");
+            this.window.classList.add("light");
+            this.input.style.color = "#222";
+            this.prompt.style.color = "#0056c9";
+        } else {
+            this.overlay.classList.remove("light");
+            this.window.classList.remove("light");
+            this.input.style.color = "#fff";
+            this.prompt.style.color = "#79b8ff";
+        }
+    }
+    bindEvents() {
+        // Only close when clicking on the overlay, not the terminal window.
+        this.overlay.addEventListener("mousedown", e => {
+            if (e.target === this.overlay) this.close();
+        });
+        this.input.addEventListener("keydown", e => this.onKey(e));
+        document.addEventListener("keydown", e => {
+            if (!this.overlay.classList.contains("hidden") && e.key === "Escape") {
+                this.close();
+            }
+        });
+        // On focus, ensure overlay is visible (fixes some mobile cases)
+        this.input.addEventListener("focus", () => {
+            if (this.overlay.classList.contains("hidden")) {
+                this.open();
+            }
+        });
+    }
+    onKey(e) {
+        if (e.key === "Enter") {
+            const val = this.input.value.trim();
+            if (!val) return;
+            this.echo("raman@portfolio:~$ " + val);
+            this.history.push(val);
+            this.histPtr = this.history.length;
+            this.input.value = "";
+            this.handleCmd(val);
+        } else if (e.key === "ArrowUp") {
+            if (this.histPtr > 0) {
+                this.histPtr--;
+                this.input.value = this.history[this.histPtr] || "";
+                setTimeout(() => this.input.setSelectionRange(this.input.value.length, this.input.value.length), 10);
+            }
+            e.preventDefault();
+        } else if (e.key === "ArrowDown") {
+            if (this.histPtr < this.history.length - 1) {
+                this.histPtr++;
+                this.input.value = this.history[this.histPtr] || "";
+            } else {
+                this.histPtr = this.history.length;
+                this.input.value = "";
+            }
+            setTimeout(() => this.input.setSelectionRange(this.input.value.length, this.input.value.length), 10);
+            e.preventDefault();
+        } else if (e.key === "Tab") {
+            e.preventDefault();
+            this.handleAutocomplete();
+        }
+    }
+    handleCmd(val) {
+        let [cmd, ...args] = val.split(" ");
+        cmd = cmd.toLowerCase();
+        if (terminalCommands[cmd]) {
+            terminalCommands[cmd].action(this, ...args);
+        } else {
+            this.echo(`Command not found: ${cmd}. Type 'help' to see available commands.`);
+        }
+    }
+    handleAutocomplete() {
+        const prefix = this.input.value.trim().toLowerCase();
+        const matches = Object.keys(terminalCommands).filter(cmd => cmd.startsWith(prefix));
+        if (matches.length === 1) {
+            this.input.value = matches[0];
+        } else if (matches.length > 1) {
+            this.echo(matches.join("    "));
+        }
+    }
+
+        // --- Contact Form State ---
+    startContactForm() {
+        this.contactForm = { step: 0, name: "", email: "", msg: "" };
+        this.echo("Contact form (type 'cancel' anytime to exit):");
+        this.echo("Your Name:");
+        this.awaitContactInput = true;
+    }
+
+    // --- Extend handleCmd to handle contact wizard ---
+    handleCmd(val) {
+        // Contact form stepper
+        if (this.awaitContactInput && this.contactForm) {
+            if (val.trim().toLowerCase() === "cancel") {
+                this.echo("Contact form cancelled.");
+                this.awaitContactInput = false;
+                this.contactForm = null;
+                return;
+            }
+            if (this.contactForm.step === 0) {
+                this.contactForm.name = val.trim();
+                this.echo("Your Email:");
+                this.contactForm.step = 1;
+                return;
+            }
+            if (this.contactForm.step === 1) {
+                this.contactForm.email = val.trim();
+                this.echo("Your Message:");
+                this.contactForm.step = 2;
+                return;
+            }
+            if (this.contactForm.step === 2) {
+                this.contactForm.msg = val.trim();
+                this.echo("Submitting your message…");
+
+                // EmailJS integration
+                emailjs.send("service_x844p0t", "template_8n0fjwl", {
+                    name: this.contactForm.name,
+                    email: this.contactForm.email,
+                    message: this.contactForm.msg
+                }).then((response) => {
+                    this.echo("Thank you! Your message has been sent.");
+                }, (error) => {
+                    this.echo("Oops! Something went wrong. Please try again later.");
+                    console.error("EmailJS error:", error);
+                });
+
+                this.awaitContactInput = false;
+                this.contactForm = null;
+                return;
+            }
+
+        }
+
+        // Normal command handling
+        let [cmd, ...args] = val.split(" ");
+        cmd = cmd.toLowerCase();
+        if (terminalCommands[cmd]) {
+            terminalCommands[cmd].action(this, ...args);
+        } else {
+            this.echo(`Command not found: ${cmd}. Type 'help' to see available commands.`);
+        }
+    }
+
+}
+let terminal = new Terminal();
+
+// --- Global function for Betelgeuse/star map trigger ---
+function openTerminal() {
+    terminal.open();
+}
