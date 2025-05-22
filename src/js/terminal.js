@@ -1,15 +1,14 @@
 // ------- MATRIX RAIN EFFECT -------
 const matrixChars = [
-    ..."RamanPandey", // Latin
-    ..."रमनपाण्डे",     // Devanagari (Nepali/Hindi)
-    ..."ラマンパンデイ", // Japanese (Katakana)
-    ..."РаманПандей",   // Russian (Cyrillic)
-    ..."拉曼潘德伊",      // Chinese (Simplified)
-    ..."رامانباندى",     // Arabic
-    ..."52616D616E50616E646579", // Hexadecimal (ASCII for "RamanPandey", no space)
-    ..."0101001001100001011011010110000101101110010100000110000101101110011001000110010101111001" // Binary (ASCII for "RamanPandey", no space)
+    ..."RamanPandey",
+    ..."रमनपाण्डे",
+    ..."ラマンパンデイ",
+    ..."РаманПандей",
+    ..."拉曼潘德伊",
+    ..."رامانباندى",
+    ..."52616D616E50616E646579",
+    ..."0101001001100001011011010110000101101110010100000110000101101110011001000110010101111001"
 ];
-
 
 let matrixRain = {
     canvas: null,
@@ -75,13 +74,16 @@ function drawMatrixRain() {
 }
 
 // ----------- TERMINAL LOGIC -----------
+// === Put your admin password here ===
+const ADMIN_PW = "yourSuperSecret123"; // <-- CHANGE THIS!
+
 const terminalCommands = {
     "help": {
         desc: "List all commands",
         action: function(term) {
             term.echo(
                 "Available commands:\n" +
-                " about, resume, contact, github, linkedin, twitter, email, theme, clear, exit\n" +
+                " about, resume, contact, github, linkedin, twitter, email, theme, schedule, admin, logout, clear, exit\n" +
                 " [Also try: projects, papers, blog, motd, whoami]"
             );
         }
@@ -93,71 +95,51 @@ const terminalCommands = {
         }
     },
     "projects": {
-        desc: "Show projects (placeholder)",
+        desc: "Open projects page",
         action: function(term) {
-            term.echo("Project showcase coming soon. For now, see my GitHub!");
+            window.location.href = "projects.html";
         }
     },
     "papers": {
-        desc: "Show papers (placeholder)",
+        desc: "Open papers page",
         action: function(term) {
-            term.echo("Research publications coming soon!");
+            window.location.href = "papers.html";
         }
     },
+
+
     "blog": {
-        desc: "Visit my blog (placeholder)",
+        desc: "Visit my blog (from file)",
         action: function(term) {
-            term.echo("Blog coming soon! Type 'motd' for some inspiration :)");
+            fetch('assets/blogs.json')
+              .then(res => res.json())
+              .then(blogs => {
+                  blogs.forEach(blog =>
+                      term.echo(`- ${blog.title}: ${blog.link || "Coming soon!"}`)
+                  );
+              })
+              .catch(() => term.echo("No blog posts available."));
         }
     },
-"motd": {
-    desc: "Message of the day",
-    action: function(term) {
-        const msgs = [
-            "The universe is under no obligation to make sense to you. —NDT",
-            "Not all those who wander are lost.",
-            "Linux is user friendly, it's just picky about its friends.",
-            "The Cosmos is within us. —Carl Sagan",
-            "Be the entropy-resistor you wish to see in the world.",
-            "Not everything that can be counted counts, and not everything that counts can be counted. —Einstein",
-            "Keep looking up… that’s the secret of life.",
-            "Those who dare to fail miserably can achieve greatly. —JFK",
-            "In the middle of difficulty lies opportunity. —Einstein",
-            "The only way to learn mathematics is to do mathematics. —Paul Halmos",
-            "Code never lies, comments sometimes do.",
-            "Stay hungry, stay foolish. —Steve Jobs",
-            "Do. Or do not. There is no try. —Yoda",
-            "The greatest enemy of knowledge is not ignorance, it is the illusion of knowledge. —Stephen Hawking",
-            "Somewhere, something incredible is waiting to be known. —Carl Sagan",
-            "Imagination will often carry us to worlds that never were.",
-            "The reward for good work is more work.",
-            "sudo make me a sandwich.",
-            "There are only 10 types of people in the world: Those who understand binary and those who don’t.",
-            "Talk is cheap. Show me the code. —Linus Torvalds",
-            "It always seems impossible until it’s done. —Nelson Mandela",
-            "Let’s go invent tomorrow instead of worrying about what happened yesterday. —Steve Jobs",
-            "Entia non sunt multiplicanda praeter necessitatem. —Occam’s Razor",
-            "Astronomy compels the soul to look upwards and leads us from this world to another.",
-            "In space, no one can hear you scream.",
-            "Any sufficiently advanced technology is indistinguishable from magic. —Arthur C. Clarke",
-            "The good thing about science is that it’s true whether or not you believe in it. —Neil deGrasse Tyson",
-            "Happiness can be found even in the darkest of times, if one only remembers to turn on the light.",
-            "A person who never made a mistake never tried anything new. —Einstein",
-            "Explore. Dream. Discover."
-        ];
-        term.echo(msgs[Math.floor(Math.random()*msgs.length)]);
-    }
-},
-
-"email": {
-    desc: "Show email addresses",
-    action: function(term) {
-        term.echo(
-          "Institutional: ramanpandey01@unm.edu\nPersonal: alpharceus@gmail.com"
-        );
-    }
-},
-
+    "motd": {
+        desc: "Message of the day",
+        action: function(term) {
+            // ... (keep your list of motds)
+            const msgs = [
+                "The universe is under no obligation to make sense to you. —NDT",
+                // ... add more
+            ];
+            term.echo(msgs[Math.floor(Math.random()*msgs.length)]);
+        }
+    },
+    "email": {
+        desc: "Show email addresses",
+        action: function(term) {
+            term.echo(
+              "Institutional: ramanpandey01@unm.edu\nPersonal: alpharceus@gmail.com"
+            );
+        }
+    },
     "whoami": {
         desc: "Identify user",
         action: function(term) {
@@ -171,13 +153,12 @@ const terminalCommands = {
             window.open("assets/resume.pdf", "_blank");
         }
     },
-"contact": {
-    desc: "Contact me (send a message via terminal form)",
-    action: function(term) {
-        term.startContactForm();
-    }
-},
-
+    "contact": {
+        desc: "Contact me (send a message via terminal form)",
+        action: function(term) {
+            term.startContactForm();
+        }
+    },
     "github": {
         desc: "Open GitHub",
         action: function(term) {
@@ -211,6 +192,38 @@ const terminalCommands = {
             }
         }
     },
+    "schedule": {
+        desc: "Show your schedule (admin only)",
+        action: function(term) {
+            if (localStorage.getItem("admin") === "true") {
+                fetch('assets/schedule.json')
+                  .then(res => res.json())
+                  .then(schedule => {
+                      term.echo("Your Private Schedule:");
+                      schedule.forEach(ev =>
+                        term.echo(`- ${ev.day} ${ev.time}: ${ev.activity}`)
+                      );
+                  })
+                  .catch(() => term.echo("Could not load schedule."));
+            } else {
+                term.echo("Admin only.");
+            }
+        }
+    },
+    "admin": {
+        desc: "Login as admin to view private data",
+        action: function(term) {
+            term.echo("Enter admin password:");
+            term.awaitAdminLogin = true;
+        }
+    },
+    "logout": {
+        desc: "Logout admin",
+        action: function(term) {
+            localStorage.removeItem("admin");
+            term.echo("Logged out.");
+        }
+    },
     "clear": {
         desc: "Clear terminal",
         action: function(term) { term.clear(); }
@@ -221,7 +234,6 @@ const terminalCommands = {
     }
 };
 
-// Terminal "class" implementation
 class Terminal {
     constructor() {
         this.overlay = document.getElementById("terminal-overlay");
@@ -279,7 +291,6 @@ class Terminal {
         }
     }
     bindEvents() {
-        // Only close when clicking on the overlay, not the terminal window.
         this.overlay.addEventListener("mousedown", e => {
             if (e.target === this.overlay) this.close();
         });
@@ -289,7 +300,6 @@ class Terminal {
                 this.close();
             }
         });
-        // On focus, ensure overlay is visible (fixes some mobile cases)
         this.input.addEventListener("focus", () => {
             if (this.overlay.classList.contains("hidden")) {
                 this.open();
@@ -328,35 +338,19 @@ class Terminal {
         }
     }
     handleCmd(val) {
-        let [cmd, ...args] = val.split(" ");
-        cmd = cmd.toLowerCase();
-        if (terminalCommands[cmd]) {
-            terminalCommands[cmd].action(this, ...args);
-        } else {
-            this.echo(`Command not found: ${cmd}. Type 'help' to see available commands.`);
+        // Admin login logic (static, client-only)
+        if (this.awaitAdminLogin) {
+            if (val.trim() === ADMIN_PW) {
+                this.echo("Admin login successful!");
+                localStorage.setItem("admin", "true");
+                this.echo("Type 'schedule' to see your private schedule.");
+            } else {
+                this.echo("Wrong password.");
+            }
+            this.awaitAdminLogin = false;
+            return;
         }
-    }
-    handleAutocomplete() {
-        const prefix = this.input.value.trim().toLowerCase();
-        const matches = Object.keys(terminalCommands).filter(cmd => cmd.startsWith(prefix));
-        if (matches.length === 1) {
-            this.input.value = matches[0];
-        } else if (matches.length > 1) {
-            this.echo(matches.join("    "));
-        }
-    }
-
-        // --- Contact Form State ---
-    startContactForm() {
-        this.contactForm = { step: 0, name: "", email: "", msg: "" };
-        this.echo("Contact form (type 'cancel' anytime to exit):");
-        this.echo("Your Name:");
-        this.awaitContactInput = true;
-    }
-
-    // --- Extend handleCmd to handle contact wizard ---
-    handleCmd(val) {
-        // Contact form stepper
+        // Contact form wizard
         if (this.awaitContactInput && this.contactForm) {
             if (val.trim().toLowerCase() === "cancel") {
                 this.echo("Contact form cancelled.");
@@ -379,7 +373,6 @@ class Terminal {
             if (this.contactForm.step === 2) {
                 this.contactForm.msg = val.trim();
                 this.echo("Submitting your message…");
-
                 // EmailJS integration
                 emailjs.send("service_x844p0t", "template_8n0fjwl", {
                     name: this.contactForm.name,
@@ -391,12 +384,10 @@ class Terminal {
                     this.echo("Oops! Something went wrong. Please try again later.");
                     console.error("EmailJS error:", error);
                 });
-
                 this.awaitContactInput = false;
                 this.contactForm = null;
                 return;
             }
-
         }
 
         // Normal command handling
@@ -408,11 +399,24 @@ class Terminal {
             this.echo(`Command not found: ${cmd}. Type 'help' to see available commands.`);
         }
     }
-
+    handleAutocomplete() {
+        const prefix = this.input.value.trim().toLowerCase();
+        const matches = Object.keys(terminalCommands).filter(cmd => cmd.startsWith(prefix));
+        if (matches.length === 1) {
+            this.input.value = matches[0];
+        } else if (matches.length > 1) {
+            this.echo(matches.join("    "));
+        }
+    }
+    startContactForm() {
+        this.contactForm = { step: 0, name: "", email: "", msg: "" };
+        this.echo("Contact form (type 'cancel' anytime to exit):");
+        this.echo("Your Name:");
+        this.awaitContactInput = true;
+    }
 }
 let terminal = new Terminal();
 
-// --- Global function for Betelgeuse/star map trigger ---
 function openTerminal() {
     terminal.open();
 }

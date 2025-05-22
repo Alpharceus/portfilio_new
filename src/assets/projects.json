@@ -1,0 +1,17 @@
+[
+    {
+        "title": "Deep Learning Assisted Scanning Probe Microscopy",
+        "desc": "Reduced lithography time for atomically precise nanofabrication using a GNN.",
+        "summary": "Used a graph neural network to analyze SPM data in real-time, optimizing the fabrication workflow for quantum devices. Reduced time by 40% compared to baseline."
+    },
+    {
+        "title": "UNM IT Scheduling Platform",
+        "desc": "Full-stack scheduling web app for UNM IT using Django, Node.js, and REST API.",
+        "summary": "Developed a robust scheduling platform with authentication and user management, streamlining IT appointment booking for UNM staff and students."
+    },
+    {
+        "title": "Planetary Orbit Simulator",
+        "desc": "Numerically solved and visualized N-body planetary motion using Python.",
+        "summary": "Simulated complex orbital mechanics using Runge-Kutta methods and interactive visualization with matplotlib and PyGame."
+    }
+]

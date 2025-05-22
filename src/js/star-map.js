@@ -215,12 +215,19 @@ function handleStarClick(idx) {
     }
 }
 //function openTerminal()   { alert("Terminal (Linux shell) overlay coming soon!"); }
-function openProjects()   { alert("Projects section coming soon!"); }
-function openPapers()     { alert("Papers/Publications section coming soon!"); }
+//function openProjects()   { alert("Projects section coming soon!"); }
+//function openPapers()     { alert("Papers/Publications section coming soon!"); }
 function openSkills()     { alert("Skills/Tech Stack section coming soon!"); }
 function openBlog()       { alert("Blog section coming soon!"); }
 function placeholderAction() { alert("This feature will be available soon!"); }
 
 function windowResized() {
     resizeCanvas(window.innerWidth, window.innerHeight);
+}
+
+function openProjects() {
+    window.location.href = "projects.html";
+}
+function openPapers() {
+    window.location.href = "papers.html";
 }
