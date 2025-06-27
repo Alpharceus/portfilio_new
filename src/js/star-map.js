@@ -231,3 +231,6 @@ function openProjects() {
 function openPapers() {
     window.location.href = "papers.html";
 }
+function openBlog() {
+    window.location.href = "blogs.html";
+}
