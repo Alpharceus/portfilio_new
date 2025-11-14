@@ -45,58 +45,91 @@ h1 {
     margin-bottom: 1.2em;
     letter-spacing: 0.02em;
 }
+
+/* ====================== PROJECT CARD (UPGRADED) ======================= */
+
 .project {
-    background: #202550;
-    border-radius: 1.1em;
-    margin-bottom: 1.5em;
-    padding: 1.3em 1.7em;
-    box-shadow: 0 6px 32px #14224e33, 0 2px 6px #20255033;
-    transition: background 0.3s, box-shadow 0.3s;
     position: relative;
-    z-index: 2;
+    background:
+        radial-gradient(circle at 20% -10%, rgba(112, 191, 255, 0.18), transparent 60%),
+        radial-gradient(circle at 110% 120%, rgba(35, 255, 148, 0.15), transparent 60%),
+        rgba(32, 37, 80, 0.92);
+    border-radius: 1.2em;
+    padding: 1.4em 1.7em;
+    margin-bottom: 1.7em;
+
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    box-shadow:
+        0 9px 40px rgba(15, 23, 42, 0.5),
+        0 0 22px rgba(15, 23, 42, 0.6);
+
+    backdrop-filter: blur(6px);
+    transition:
+        transform 0.22s ease-out,
+        box-shadow 0.22s ease-out,
+        background 0.22s ease-out,
+        border-color 0.22s ease-out;
 }
+
 .project:hover {
-    background: #2d3c70;
-    box-shadow: 0 10px 40px #101a3855, 0 4px 16px #40609022;
+    transform: translateY(-4px);
+    background:
+        radial-gradient(circle at 10% -20%, rgba(129, 230, 217, 0.22), transparent 65%),
+        radial-gradient(circle at 120% 140%, rgba(129, 140, 248, 0.22), transparent 65%),
+        rgba(45, 60, 112, 0.95);
+    border-color: rgba(170, 200, 255, 0.7);
+
+    box-shadow:
+        0 14px 52px rgba(20, 28, 55, 0.75),
+        0 0 30px rgba(56, 189, 248, 0.40),
+        0 0 20px rgba(35, 255, 148, 0.30);
 }
+
+/* --- TITLE (emoji icon + title text) --- */
 .project h2 {
-    margin: 0 0 0.6em 0;
-    font-size: 1.3em;
-    color: #e7eaff;
+    display: flex;
+    align-items: center;
+    gap: 0.55em;
+    margin: 0 0 0.75em 0;
+
+    font-size: 1.27em;
+    color: #e9ebff;
+    font-weight: 600;
     letter-spacing: 0.01em;
+
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.25;
 }
+
+/* --- DESCRIPTION TEXT --- */
 .project p {
-    margin: 0.2em 0 0 0;
-    color: #b6b9cc;
+    margin: 0.25em 0 0 0;
+    color: #c8cbdf;
+    font-size: 0.95em;
+    line-height: 1.45;
 }
+
+/* --- DETAILS / SUMMARY --- */
+
 .project details {
-    margin-top: 0.7em;
-    color: #93c5f7;
+    margin-top: 0.9em;
+    font-size: 0.88em;
+    color: #a9c9ff;
 }
+
 .project details summary {
     cursor: pointer;
     color: #80ffb9;
-    font-weight: bold;
+    font-weight: 600;
+    margin-bottom: 0.3em;
     outline: none;
+    letter-spacing: 0.01em;
 }
 
-footer {
-    text-align: center;
-    color: #4a5870;
-    padding: 1.1em 0 1.6em 0;
-    font-size: 0.98em;
-    background: none;
-}
-@media (max-width: 600px) {
-    main {
-        padding: 1em 0.4em 1em 0.4em;
-    }
-    .project {
-        padding: 1em 0.7em;
-    }
-    h1 {
-        font-size: 1.3em;
-    }
+.project details summary:hover {
+    color: #b8ffd7;
+    text-shadow: 0 0 6px rgba(128, 255, 185, 0.5);
 }
 
 
